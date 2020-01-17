@@ -1,0 +1,1242 @@
+#BEGIN Configuration used. Extracted from "esesc.conf":
+technology='ThisSOCTech'
+reportFile='noname'
+cpusimu[0]='tradCORE'
+cpuemul[0]='QEMUSectionCPU'
+pwrmodel  ='McPatPwrCounters'
+[TASSROI]
+ROIOnly   =true
+doPowPrediction=1
+PowPredictionHist=5
+nInstTiming=2.000000e+08
+nInstDetail=0
+nInstWarmup=1.000000e+09
+nInstRabbit=100
+nInstMax  =2.000000e+09
+nInstSkip =0
+type      ='inst'
+maxnsTime =1.000000e+12
+[NoSyscall]
+runtime   =false
+generate  =false
+enable    =false
+[QEMUSectionCPU]
+params[0] ="./bins/riscv64/pr.riscv64 -g 19 -n 30"
+sampler   ='TASSROI'
+dorun     =true
+type      ='qemu'
+syscall   ='NoSyscall'
+[ThisSOCTech]
+frequency =3.000000e+09
+[McPatPwrCounters]
+doPower   =false
+[BigMem]
+hitDelay  =140
+bsize     =64
+coldWarmup=false
+bot_size  =0
+deviceType='niceCache'
+[L3Cache]
+recvFillWidth=16
+sendFillPortOccp=0
+missDelay =1
+hitDelay  =28
+bkPortOccp=1
+numBanks  =8
+replPolicy='LRU'
+bsize     =64
+size      =4194304
+nlprefetch=0
+prefetchDegree=1024
+dupPrefetchTag=true
+maxRequests=64
+directory =true
+bkNumPorts=1
+dropPrefetchFill=false
+assoc     =32
+xorIndex  =true
+inclusive =true
+bot_size  =0
+lowerLevel="BigMem Memory"
+deviceType='cache'
+sendFillNumPorts=1
+[PrivL2]
+hitDelay  =8
+bkPortOccp=2
+bkNumPorts=1
+replPolicy='LRU'
+bsize     =64
+nlprefetch=0
+prefetchDegree=16
+size      =524288
+directory =true
+inclusive =true
+bot_size  =0
+deviceType='cache'
+numBanks  =2
+lowerLevel="L3Cache L3 shared"
+assoc     =8
+missDelay =1
+maxRequests=48
+[DL1_core]
+bot_size  =512
+sendFillNumPorts=1
+sendFillPortOccp=0
+bkPortOccp=0
+bkNumPorts=0
+numBanks  =1
+lowerLevel="PrivL2 L2 sharedby 4"
+nlprefetch=0
+size      =32768
+directory =false
+inclusive =true
+deviceType='cache'
+prefetchDegree=4
+replPolicy='LRU'
+maxRequests=32
+hitDelay  =4
+bsize     =64
+skew      =false
+missDelay =1
+assoc     =8
+[IL1_core]
+bot_size  =0
+missDelay =1
+bkNumPorts=1
+replPolicy='LRU'
+assoc     =2
+maxRequests=32
+bsize     =64
+deviceType='icache'
+numBanks  =1
+bkPortOccp=1
+nlprefetch=0
+inclusive =true
+directory =false
+lowerLevel="PrivL2 L2 sharedby 4"
+hitDelay  =2
+size      =32768
+[BPredIssueX3]
+doc_size  =512
+btbReplPolicy='LRU'
+btbBsize  =1
+bits      =1
+addrShift =0
+btbSize   =64
+btbAssoc  =64
+size      =64
+type      ='ldbp'
+[BPredIssueX2]
+btbReplPolicy='LRU'
+btbBsize  =1
+BTACDelay =1
+addrShift =0
+nhist     =6
+bimodalSize=8192
+FetchPredict=false
+type      ='imli'
+bimodalWidth=2
+statcorrector=true
+btbSize   =2048
+btbAssoc  =4
+[BPredIssueX]
+rasSize   =16
+btbAssoc  =64
+btbBsize  =1
+BTACDelay =3
+bits      =1
+btbSize   =64
+rasPrefetch=0
+btbReplPolicy='LRU'
+addrShift =0
+size      =256
+type      ='2bit'
+[SUNIT_SALU]
+Occ       =1
+Num       =1
+[SUNIT_AALU]
+Occ       =1
+Num       =1
+[LUNIT_LALU]
+Num       =2
+Occ       =1
+[CUNIT_CALU]
+Occ       =1
+Num       =1
+[BUNIT_BALU]
+Occ       =1
+Num       =1
+[AUNIT_AALU]
+Occ       =1
+Num       =2
+[LSUNIT]
+iSALU_ADDRUnit='SUNIT_AALU'
+iSALU_ADDRLat=0
+iSALU_SCLat=0
+iSALU_LLLat=0
+iSALU_STLat=0
+iLALU_LDLat=0
+schedDelay=0
+schedPortOccp=1
+nRegs     =128
+iSALU_STUnit='SUNIT_SALU'
+schedNumPorts=3
+iSALU_SCUnit='SUNIT_SALU'
+iSALU_LLUnit='SUNIT_SALU'
+recycleAt ='execute'
+iLALU_LDUnit='LUNIT_LALU'
+winSize   =28
+[CUNIT]
+iCALU_MULTLat=2
+iCALU_FPDIVUnit='CUNIT_CALU'
+iCALU_FPDIVLat=2
+schedPortOccp=1
+iCALU_FPALUUnit='CUNIT_CALU'
+recycleAt ='execute'
+winSize   =36
+iCALU_DIVLat=2
+nRegs     =160
+iCALU_FPMULTLat=2
+iCALU_FPMULTUnit='CUNIT_CALU'
+schedNumPorts=4
+iCALU_DIVUnit='CUNIT_CALU'
+iCALU_MULTUnit='CUNIT_CALU'
+schedDelay=0
+iCALU_FPALULat=2
+[AUNIT]
+iBALU_RCALLUnit='BUNIT_BALU'
+iBALU_RCALLLat=1
+iBALU_RJUMPUnit='BUNIT_BALU'
+iBALU_RBRANCHLat=1
+iBALU_LCALLUnit='BUNIT_BALU'
+iBALU_RBRANCHUnit='BUNIT_BALU'
+iRALULat  =1
+schedPortOccp=1
+iAALUUnit ='AUNIT_AALU'
+nRegs     =128
+iBALU_LBRANCHUnit='BUNIT_BALU'
+schedNumPorts=4
+iBALU_RJUMPLat=1
+iBALU_LCALLLat=1
+iBALU_RETLat=1
+recycleAt ='execute'
+iBALU_LJUMPUnit='BUNIT_BALU'
+winSize   =16
+iBALU_RETUnit='BUNIT_BALU'
+iRALUUnit ='AUNIT_AALU'
+iBALU_LBRANCHLat=1
+iAALULat  =1
+schedDelay=0
+iBALU_LJUMPLat=1
+[PrefetchEngine]
+minDistance=8
+maxPrefetch=16
+type      ='void'
+pfStride  =4
+[tradCORE]
+nTotalRegs=340
+scbSize   =16
+StoreSetSize=8192
+enableDCache=true
+enableICache=true
+MemoryReplay=false
+IL1       ="IL1_core IL1"
+DL1       ="DL1_core DL1"
+prefetcher='PrefetchEngine'
+maxLoads  =96
+robSize   =224
+bpred3    ='BPredIssueX3'
+bpred2    ='BPredIssueX2'
+interClusterLat=0
+maxStores =64
+stForwardDelay=3
+maxIRequests=5
+cluster[0]='AUNIT'
+cluster[5]='LSUNIT'
+cluster[4]='CUNIT'
+cluster[3]='AUNIT'
+cluster[2]='AUNIT'
+cluster[1]='AUNIT'
+bpredDelay=1
+bb4Cycle  =2
+maxBranches=1024
+retireDelay=3
+clusterScheduler='RoundRobin'
+retireWidth=8
+drainOnMiss=false
+issueWidth=6
+renameDelay=2
+instQueueSize=32
+bpred     ='BPredIssueX'
+type      ='ooo'
+lgt_size  =512
+throttlingRatio=1.000000e+00
+decodeDelay=3
+fetchWidth=16
+alignedFetch=false
+#END Configuration used. Extracted from "esesc.conf":
+OSSim:reportName=done
+OSSim:beginTime=Wed Nov 13 20:07:30 2019
+
+OSSim:endTime=Wed Nov 13 20:46:12 2019
+
+OSSim:nCPUs=1
+OSSim:P(0)_Sampler=0
+OSSim:P(0)_Type=0
+OSSim:nSampler=1
+OSSim:globalClock=1732504707
+OSSim:msecs= 2322.07
+#BEGIN GStats::report done
+P(0)_ipc:n=1::v=69.004707
+S(0):globalClock_Timing=289964198.000000
+S(0):TimingInst=200000000.000000
+S(0):RabbitInst=0.000000
+S(0):TimingTime=1024183978.000000
+S(0):WarmupTime=1174031992.000000
+S(0):RabbitTime=37.000000
+S(0):InitTime=0.000000
+S(0):nSwitches=6.000000
+P(0)_prof_11978:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=2:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_11a16:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a2326:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5354:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5348:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5336:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3a74:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c48d2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e42:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c49ce:n=0.000:cpi=0.000000:wt=0.750000:et=0.000000:flush=2:prefetch=0:ldbr=3:bp1_hit=6:bp1_miss=2:bp2_hit=6:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=7:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c49dc:n=0.000:cpi=0.000000:wt=0.875000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=7:bp1_miss=1:bp2_hit=7:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=7:tl2_pred=0:tl2_unpred=7
+P(0)_prof_c487e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4856:n=0.000:cpi=0.000000:wt=0.714286:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=6:bp1_miss=1:bp2_hit=6:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=6:tl2_pred=0:tl2_unpred=6
+P(0)_prof_c484a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c483a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b3bc4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b3bbe:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_11a1a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=15:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c47ee:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a534a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c47e2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c47da:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c47d0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4106:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=7:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c486e:n=0.000:cpi=0.000000:wt=0.250000:et=0.000000:flush=3:prefetch=0:ldbr=14:bp1_hit=5:bp1_miss=3:bp2_hit=5:bp2_miss=3:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=7:tl2_pred=0:tl2_unpred=7
+P(0)_prof_c40e4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c477a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c40be:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_119ae:n=0.019:cpi=0.000000:wt=0.999998:et=0.000000:flush=2:prefetch=0:ldbr=0:bp1_hit=524286:bp1_miss=2:bp2_hit=524286:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c42fc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=16:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4da8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4da0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=20:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c42ba:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3f08:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3f04:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3efc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3ec8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=22:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e64:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e4a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4896:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a1930:n=0.000:cpi=0.000000:wt=0.875000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=7:bp1_miss=1:bp2_hit=7:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c33d4:n=0.000:cpi=0.000000:wt=0.875000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=7:bp1_miss=1:bp2_hit=7:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=7:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c48de:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c33c2:n=0.000:cpi=0.000000:wt=0.875000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=7:bp1_miss=1:bp2_hit=7:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=7:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e04:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4264:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3dde:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3dca:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3dc2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=19:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4462:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3eae:n=0.000:cpi=0.000000:wt=0.333333:et=0.000000:flush=2:prefetch=0:ldbr=0:bp1_hit=4:bp1_miss=2:bp2_hit=4:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a592a:n=0.000:cpi=0.000000:wt=0.500000:et=0.000000:flush=2:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=2:bp2_hit=0:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3d2c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4114:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5d12:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3808:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=20:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c488a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e80:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6488:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3976:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3ee4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c375a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c47c8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51ae:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3732:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4300:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a58f6:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=18:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a511c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b5474:n=0.000:cpi=0.000000:wt=0.400000:et=0.000000:flush=2:prefetch=0:ldbr=3:bp1_hit=2:bp1_miss=3:bp2_hit=3:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=4:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b546c:n=0.000:cpi=0.000000:wt=0.500000:et=0.000000:flush=2:prefetch=0:ldbr=1:bp1_hit=3:bp1_miss=3:bp2_hit=4:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=5:tl2_pred=0:tl2_unpred=0
+P(0)_prof_119da:n=0.919:cpi=0.000000:wt=0.955416:et=0.000000:flush=558038:prefetch=0:ldbr=15:bp1_hit=24961593:bp1_miss=884211:bp2_hit=25287766:bp2_miss=558038:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=24306441:tl1_unpred=1539325:tl2_pred=7091211:tl2_unpred=1735833
+P(0)_prof_a591e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3d20:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c42b6:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b547a:n=0.000:cpi=0.000000:wt=0.833333:et=0.000000:flush=1:prefetch=0:ldbr=16:bp1_hit=4:bp1_miss=2:bp2_hit=5:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=5:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4456:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a58ca:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3f58:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=7:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5b56:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=19:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c40ca:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5b46:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=15:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4324:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b4ada:n=0.000:cpi=0.000000:wt=0.833333:et=0.000000:flush=1:prefetch=0:ldbr=9:bp1_hit=4:bp1_miss=2:bp2_hit=5:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5b1c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5afc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e92:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=19:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a590e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a68f8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5aca:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a8762:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a527e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a8744:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=5:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a86ec:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=9:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4816:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a86c2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5b30:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=19:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b54c6:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6386:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5ab4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6272:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e6a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=2:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a58e6:n=0.000:cpi=0.000000:wt=0.500000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=2:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c113c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=12:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6382:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5a6a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=18:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c49b0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5b20:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a52ca:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a52d4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5a5e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e54:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_ac7e0:n=0.000:cpi=0.000000:wt=0.400000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=5:bp1_miss=0:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=4:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a59fe:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3f14:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5990:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b3bb8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3f10:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a15b2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a56e8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b4b2c:n=0.000:cpi=0.000000:wt=0.333333:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=5:bp1_miss=1:bp2_hit=5:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e72:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a63f2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51da:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5666:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6402:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a565e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3720:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5dac:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a63bc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=15:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a2414:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=9:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a522c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=9:bp1_hit=1:bp1_miss=1:bp2_hit=1:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51e6:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a528e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b3b82:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3eda:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_d70f0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51cc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_11a02:n=0.031:cpi=0.000000:wt=0.999994:et=0.000000:flush=2:prefetch=0:ldbr=0:bp1_hit=873391:bp1_miss=3:bp2_hit=873392:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51bc:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c448c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=7:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b54ce:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=2:prefetch=0:ldbr=16:bp1_hit=0:bp1_miss=2:bp2_hit=0:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a51a2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c329c:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c4862:n=0.000:cpi=0.000000:wt=0.714286:et=0.000000:flush=2:prefetch=0:ldbr=0:bp1_hit=6:bp1_miss=1:bp2_hit=5:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_ac7e4:n=0.000:cpi=0.000000:wt=0.400000:et=0.000000:flush=1:prefetch=0:ldbr=18:bp1_hit=4:bp1_miss=1:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=1
+P(0)_prof_ac76a:n=0.000:cpi=0.000000:wt=0.800000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=3:bp1_miss=2:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=4:tl2_pred=0:tl2_unpred=4
+P(0)_prof_c3f00:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6288:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a8778:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=14:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b4b3c:n=0.000:cpi=0.000000:wt=0.111111:et=0.000000:flush=4:prefetch=0:ldbr=0:bp1_hit=6:bp1_miss=3:bp2_hit=5:bp2_miss=4:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a56f8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a193e:n=0.000:cpi=0.000000:wt=0.500000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=7:bp1_miss=1:bp2_hit=7:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e16:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=2:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6928:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_ac760:n=0.000:cpi=0.000000:wt=0.600000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=5:bp1_miss=0:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_ac7fa:n=0.000:cpi=0.000000:wt=0.600000:et=0.000000:flush=0:prefetch=0:ldbr=3:bp1_hit=5:bp1_miss=0:bp2_hit=5:bp2_miss=0:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=4:tl2_pred=0:tl2_unpred=0
+P(0)_prof_ac74c:n=0.000:cpi=0.000000:wt=0.600000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=4:bp1_miss=1:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3992:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a518a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3e8e:n=0.000:cpi=0.000000:wt=0.500000:et=0.000000:flush=2:prefetch=0:ldbr=9:bp1_hit=0:bp1_miss=2:bp2_hit=0:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_119c6:n=0.031:cpi=0.000000:wt=0.398179:et=0.000000:flush=17:prefetch=0:ldbr=14:bp1_hit=470738:bp1_miss=402656:bp2_hit=557817:bp2_miss=315577:bp3_hit=873360:bp3_miss=1:bp_hit2_miss3=0:bp_hit3_miss2=315560:tl1_pred=873385:tl1_unpred=8:tl2_pred=873385:tl2_unpred=8
+P(0)_prof_a52d0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=0:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=1:bp2_miss=0:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a52c0:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c42a4:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b5468:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=2:prefetch=0:ldbr=3:bp1_hit=1:bp1_miss=2:bp2_hit=1:bp2_miss=2:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=1:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b54d2:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5134:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a6640:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=1:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c403a:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=17:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3eb8:n=0.000:cpi=0.000000:wt=0.800000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=4:bp1_miss=1:bp2_hit=4:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c32a8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_b54da:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=16:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e10:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=7:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a512e:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5164:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a53da:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=9:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5e68:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=1:bp1_miss=0:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c40e8:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_c3356:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=0:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_prof_a5144:n=0.000:cpi=0.000000:wt=0.000000:et=0.000000:flush=1:prefetch=0:ldbr=3:bp1_hit=0:bp1_miss=1:bp2_hit=0:bp2_miss=1:bp3_hit=0:bp3_miss=0:bp_hit2_miss3=0:bp_hit3_miss2=0:tl1_pred=0:tl1_unpred=0:tl2_pred=0:tl2_unpred=0
+P(0)_LSUNIT5_14_avgRetireTime:n=0::v=-nan
+P(0)_LSUNIT5_14_avgExecuteTime:n=0::v=-nan
+P(0)_LSUNIT5_14_avgIssueTime:n=0::v=-nan
+P(0)_LSUNIT5_SUNIT_AALU_occ:n=0::v=-nan
+P(0)_LSUNIT5_11_avgRetireTime:n=1398008::v=54.958746
+P(0)_LSUNIT5_11_avgExecuteTime:n=1398008::v=0.021535
+P(0)_LSUNIT5_11_avgRenameTime:n=1398008::v=29.691097
+P(0)_LSUNIT5_specld:stldViolations=0.000000
+P(0)_LSUNIT5_10_avgRetireTime:n=55885105::v=45.033987
+P(0)_LSUNIT5_10_avgExecuteTime:n=55885105::v=80.269496
+P(0)_LSUNIT5_10_avgIssueTime:n=55885105::v=58.075564
+P(0)_LSUNIT5_10_avgRenameTime:n=55885105::v=99.754797
+S(0):DetailInst=0.000000
+P(0)_LSUNIT5_winNotUsed:n=57283113::v=1.346704
+P(0)_LSUNIT5_wrForwardBus=34204921.000000
+P(0)_CUNIT4_15_avgRetireTime:n=32692809::v=14.609984
+P(0)_CUNIT4_15_avgExecuteTime:n=32692809::v=2.314814
+P(0)_CUNIT4_15_avgRenameTime:n=32692809::v=82.728682
+P(0)_CUNIT4_wrRegPool=32692809.000000
+P(0)_CUNIT4_rdRegPool=65385618.000000
+P(0)_CUNIT4_wrForwardBus=1369235.000000
+P(0)_AUNIT3_3_avgIssueTime:n=7029328::v=1.458141
+P(0)_AUNIT3_3_avgRenameTime:n=7029328::v=93.018620
+P(0)_AUNIT3_dmemoryBarrier=1.000000
+P(0)_AUNIT3_1_avgExecuteTime:n=20476689::v=1.386752
+P(0)_AUNIT3_1_avgIssueTime:n=20476689::v=79.819427
+P(0)_AUNIT3_rdRegPool=55012034.000000
+P(0)_AUNIT3_winNotUsed:n=27506017::v=10.016962
+progressedTime:max=966547322.000000:n=1
+P(0)_AUNIT3_wrForwardBus=22081944.000000
+P(0)_AUNIT2_3_avgRenameTime:n=7029328::v=94.023986
+P(0)_AUNIT2_dmemoryBarrier=0.000000
+P(0)_AUNIT2_1_avgRetireTime:n=20476690::v=101.936218
+P(0)_AUNIT2_AUNIT_AALU_occ:n=20476690::v=0.416498
+P(0)_AUNIT2_wrRegPool=20476701.000000
+P(0)_AUNIT2_wrForwardBus=23268843.000000
+P(0)_AUNIT1_3_avgExecuteTime:n=7029330::v=1.003286
+P(0)_AUNIT1_3_avgIssueTime:n=7029330::v=1.466412
+P(0)_AUNIT1_dmemoryBarrier=0.000000
+P(0)_AUNIT1_1_avgRetireTime:n=20476690::v=102.417452
+P(0)_AUNIT1_1_avgExecuteTime:n=20476690::v=1.391222
+P(0)_AUNIT3_3_avgRetireTime:n=7029328::v=184.149271
+P(0)_AUNIT2_3_avgIssueTime:n=7029328::v=1.640652
+P(0)_AUNIT1_1_avgIssueTime:n=20476690::v=79.933864
+P(0)_AUNIT2_1_avgExecuteTime:n=20476690::v=1.417284
+P(0)_AUNIT1_wrRegPool=20476700.000000
+P(0)_AUNIT1_rdRegPool=55012040.000000
+P(0)_AUNIT1_sched_occ:n=27506020::v=0.001248
+P(0)_AUNIT3_sched_occ:n=27506017::v=0.001288
+P(0)_AUNIT0_3_avgExecuteTime:n=7029332::v=1.007916
+P(0)_AUNIT0_BUNIT_BALU_occ:n=7029332::v=0.002371
+P(0)_AUNIT0_imemoryBarrier=0.000000
+P(0)_AUNIT0_dmemoryBarrier=2.000000
+P(0)_AUNIT0_1_avgRetireTime:n=20476690::v=101.591284
+P(0)_AUNIT0_3_avgRetireTime:n=7029332::v=181.622962
+P(0)_AUNIT0_AUNIT_AALU_occ:n=20476690::v=0.413607
+P(0)_AUNIT0_rdRegPool=55012044.000000
+P(0)_AUNIT0_winNotUsed:n=27506022::v=9.950147
+P(0)_AUNIT0_wrForwardBus=23205077.000000
+P(0)_AUNIT1_winNotUsed:n=27506020::v=10.001723
+P(0):stldForwarding=104163.000000
+P(0)_BPred3_BTB:_trackerDown2n=0.000000
+P(0)_BPred3_BTB:_trackerDown1n=0.000000
+P(0)_BPred3_BTB:_trackerDown4=0.000000
+P(0)_BPred3_BTB:_trackerDown3=0.000000
+P(0)_BPred3_BTB:_trackerDown1=0.000000
+P(0)_BPred3_BTB:_trackerUp1n=0.000000
+P(0)_BPred3_BTB:_trackerMore=0.000000
+P(0)_BPred3_BTB:_trackerTwo=0.000000
+P(0)_BPred3_BTB:_trackerOne=0.000000
+P(0)_BPred3_BTB:_tracker12=0.000000
+P(0)_BPred3_BTB:_tracker9=0.000000
+P(0)_BPred3_BTB:_tracker8=0.000000
+P(0)_BPred3_BTB:_tracker7=0.000000
+P(0)_BPred3_BTB:_tracker6=0.000000
+P(0)_BPred3_BTB:_tracker3=0.000000
+P(0)_BPred3_BTB:_tracker2=0.000000
+P(0)_AUNIT2_BUNIT_BALU_occ:n=7029328::v=0.002794
+P(0)_BPred3_BTB:_tracker1=0.000000
+P(0)_BPred3_BTB:nMiss=1.000000
+P(0)_BPred2_BTB:_trackerDown4n=0.000000
+P(0)_BPred2_BTB:_trackerDown2n=0.000000
+P(0)_BPred2_BTB:_trackerDown4=0.000000
+P(0)_BPred2_BTB:_trackerDown2=0.000000
+P(0)_BPred2_BTB:_trackerUp1n=0.000000
+P(0)_BPred2_BTB:_trackerUp1=0.000000
+P(0)_BPred2_BTB:_trackerMore=0.000000
+P(0)_BPred2_BTB:_tracker10=0.000000
+P(0)_BPred2_BTB:_tracker9=0.000000
+P(0)_BPred2_BTB:_trackerZero=0.000000
+P(0)_BPred2_BTB:_tracker7=0.000000
+P(0)_BPred2_BTB:_trackerDown1=0.000000
+P(0)_BPred2_BTB:_tracker3=0.000000
+P(0)_BPred2_BTB:_tracker2=0.000000
+P(0)_BPred2_BTB:_tracker4=0.000000
+P(0)_BPred2_BTB:_tracker1=0.000000
+P(0)_BPred2_BTB:_tracker0=0.000000
+P(0)_BPred2_BTB:nHit=26685693.000000
+P(0)_BPred2_imli:nMiss=873724.000000
+P(0)_BPred2_imli:nHit=27243387.000000
+P(0)_BPred_BTB:_trackerDown3n=0.000000
+P(0)_BPred_BTB:_trackerDown2n=0.000000
+P(0)_LSUNIT5_11_avgIssueTime:n=1398008::v=99.541542
+P(0)_AUNIT1_imemoryBarrier=0.000000
+P(0)_BPred_BTB:_trackerDown1n=0.000000
+P(0)_BPred_BTB:_trackerDown4=0.000000
+P(0)_BPred_BTB:_trackerDown3=0.000000
+P(0)_BPred_BTB:_trackerDown2=0.000000
+P(0)_BPred_BTB:_trackerDown1=0.000000
+P(0)_BPred_BTB:_trackerUp1n=0.000000
+P(0)_BPred_BTB:_trackerUp1=0.000000
+P(0)_BPred_BTB:_trackerOne=0.000000
+P(0)_BPred_BTB:_tracker15=0.000000
+P(0)_BPred3_BTB:_tracker11=0.000000
+P(0)_BPred_BTB:_tracker13=0.000000
+P(0)_BPred_BTB:_tracker12=0.000000
+P(0)_BPred_BTB:_tracker10=0.000000
+S(0):WarmupInst=1800000000.000000
+P(0)_CUNIT4_sched_occ:n=32692809::v=0.004796
+P(0)_BPred_BTB:_tracker8=0.000000
+P(0)_uipc:n=1::v=68.992798
+P(0)_BPred_BTB:_tracker6=0.000000
+P(0)_BPred_BTB:_tracker3=0.000000
+P(0)_BPred_BTB:_tracker2=0.000000
+P(0)_BPred_BTB:_tracker1=0.000000
+P(0)_BPred_BTB:_tracker0=0.000000
+P(0)_BPred_2bit:nHit=26830171.000000
+P(0)_BPred_RAS:nMiss=0.000000
+P(0)_BPred_RAS:nHit=46.000000
+P(0)_BPred:nAgree3=0.000000
+P(0)_AUNIT1_1_avgRenameTime:n=20476690::v=100.505890
+P(0)_BPred:nUnFixes=558255.000000
+P(0)_BPred:nFixes2=442106.000000
+P(0)_AUNIT3_imemoryBarrier=0.000000
+P(0)_BPred:nTaken3=27001058.000000
+P(0)_BPred:nNoPredict_miss3=442193.000000
+P(0)_BPred:nMiss3=0.000000
+P(0)_BPred:nNoPredict3=27243911.000000
+P(0)_BPred:nNoPredict_miss2=0.000000
+P(0)_avgPNRHitLoadSpec:n=289782547::v=25.801463
+P(0)_BPred:nBranches2=28117272.000000
+P(0)_BPred:nNoPredict=0.000000
+P(0)_AUNIT0_1_avgExecuteTime:n=20476690::v=1.414480
+P(0)_BPred2_BTB:_tracker12=0.000000
+P(0)_BPred:nBTAC=69.000000
+P(0)_nLoadData_per_branch:max=0
+P(0)_nLoadData_per_branch:v=-nan
+P(0)_nLoadData_per_branch:n=0.000000
+P(0)_dataHist:max=0
+P(0)_dataHist:v=-nan
+P(0)_dataHist:n=0.000000
+P(0)_zeroDinst:nBTAC=0.000000
+P(0)_BPred3_BTB:_trackerDown3n=0.000000
+P(0)_FetchEngine:nDelayInst2=70.000000
+P(0)_FetchEngine:nDelayInst1=35479277.000000
+P(0)_CUNIT4_CUNIT_CALU_occ:n=32692809::v=0.310018
+P(0)_BPred_BTB:_trackerDown4n=0.000000
+P(0)_FetchEngine_avgFetchTime:n=1000361::v=1060.647935
+P(0)_FetchEngine_avgBranchTime:n=558255::v=63.553890
+P(0)_FetchEngine_avgFetchLost:n=31189511::v=9.366028
+P(0)_ExeEngine_iCALU_DIV:n=2.000000
+P(0)_ExeEngine_iSALU_LL:n=1.000000
+P(0)_ExeEngine_iBALU_RET:n=46.000000
+P(0)_ExeEngine_iBALU_LJUMP:n=28.000000
+P(0)_ExeEngine_iBALU_LBRANCH:n=28117194.000000
+P(0)_ExeEngine_iAALU:n=81906567.000000
+P(0)_BPred3_ldbp:nMiss=0.000000
+P(0)_ExeEngine_iSubInvalid:n=0.000000
+P(0)_AUNIT3_1_avgRetireTime:n=20476689::v=102.448886
+P(0)_ExeEngine:nSmallROBStall=5866936.000000
+P(0)_avgFetchWidth:n=31189510::v=6.412412
+OS:wallClock=289885799.000000
+P(0):noFetch2=15753749.000000
+P(0)_BPred3_BTB:_tracker5=0.000000
+P(0):noFetch=242942533.000000
+P(0)_pref_avgPrefetchNum:n=0::v=-nan
+DL1(0)p_MSHR_avgSubUse:n=0::v=-nan
+DL1(0)p_MSHR_avgUse:n=0::v=-nan
+DL1(0)_MSHR:nStallConflict=275012631.000000
+P(0)_BPred3_BTB:_tracker14=0.000000
+DL1(0)_MSHR_avgUse:n=92699685::v=13.474897
+DL1(0)_trackerDown4n=0.000000
+DL1(0)_trackerTwo=0.000000
+P(0)_ExeEngine:nDivergeStall=0.000000
+DL1(0)_trackerOne=0.000000
+DL1(0)_tracker14=0.000000
+P(0)_BPred:nTaken2=27001058.000000
+DL1(0)_tracker13=0.000000
+DL1(0)_tracker12=0.000000
+DL1(0)_tracker11=0.000000
+DL1(0)_tracker10=0.000000
+DL1(0)_tracker8=0.000000
+DL1(0)_tracker5=0.000000
+DL1(0)_tracker2=0.000000
+P(0)_AUNIT2_sched_occ:n=27506018::v=0.002085
+DL1(0)_tracker0=0.000000
+DL1(0):MMUSetState=0.000000
+DL1(0):setExclusiveSetState=0.000000
+DL1(0):setSharedSetState=0.000000
+DL1(0):setDirtySetState=0.000000
+DL1(0)_trackerUp1n=0.000000
+P(0)_LSUNIT5_rdRegPool=114566226.000000
+DL1(0):setValidSetState=0.000000
+DL1(0):setInvalidSetState=350.000000
+P(0)_ExeEngine:nSyscallStall=0.000000
+DL1(0):setInvalidAck=0.000000
+DL1(0):VPCMUHalfMiss=0.000000
+DL1(0):MMUHalfMiss=0.000000
+P(0)_BPred_2bit:nMiss=1286977.000000
+DL1(0):setExclusiveHalfMiss=0.000000
+DL1(0):writeHalfMiss=205748.000000
+DL1(0):setInvalidHalfMiss=0.000000
+P(0)_BPred2_BTB:_tracker8=0.000000
+P(0)_BPred_BTB:_trackerMore=0.000000
+DL1(0):VPCMUMissState=0.000000
+DL1(0)_tracker6=0.000000
+DL1(0):MMUMissState=0.000000
+DL1(0):setExclusiveMissState=0.000000
+DL1(0):MMUMiss=0.000000
+DL1(0):setValidAck=0.000000
+DL1(0):setExclusiveMiss=0.000000
+DL1(0):MMUAck=0.000000
+DL1(0):setInvalidMiss=0.000000
+DL1(0):setSharedHit=0.000000
+DL1(0):writeHit=1159471.000000
+DL1(0):setInvalidHit=0.000000
+DL1(0):nPrefetchDropped=0.000000
+DL1(0):nPrefetchHitBusy=0.000000
+DL1(0):nPrefetchLineFill=0.000000
+DL1(0):nPrefetchUseful=0.000000
+P(0)_FetchEngine:nDelayInst3=884212.000000
+DL1(0)_avgPrefetchLat:n=0::v=-nan
+DL1(0)_invalidateMiss=0.000000
+P(0)_ExeEngine:nOutsBranchesStall=0.000000
+DL1(0)_capInvalidateMiss=0.000000
+DL1(0)_capInvalidateHit=0.000000
+DL1(0)_avgSnoopLat:n=0::v=-nan
+DL1(0)_avgHalfMemLat:n=23401830::v=130.435642
+P(0)_BPred3_BTB:nHit=315363.000000
+P(0)_ExeEngine_iCALU_FPDIV:n=524288.000000
+P(0)_BPred_BTB:_tracker14=0.000000
+DL1(0)_avgMemLat:n=92699685::v=50.137253
+DL1(0):lineFill=26282922.000000
+DL1(0):invOne=0.000000
+DL1(0):displacedRecv=0.000000
+DL1(0):setInvalidMissState=0.000000
+P(0)_BPred:nFixes3=516723.000000
+DL1(0):nSendPrefetch=0.000000
+DL1(0):setSharedMiss=0.000000
+DL1(0):nTryPrefetch=0.000000
+P(0)_ExeEngine_iSALU_SC:n=2.000000
+DL1(0)_tracker3=0.000000
+IL1(0)_bk(0)_occ:n=31211658::v=0.000020
+P(0)_AUNIT3_BUNIT_BALU_occ:n=7029328::v=0.002893
+P(0)_AUNIT0_1_avgRenameTime:n=20476690::v=103.968269
+DL1(0):writeMiss=32789.000000
+L2(0)_sendFill_occ:n=26293996::v=0.093108
+L2(0)_bk(1)_occ:n=52613626::v=7.080695
+L3(0)_bk(6)_occ:n=4509297::v=0.372325
+DL1(0)_trackerMore=0.000000
+L3(0)_bk(4)_occ:n=4331038::v=0.360465
+L3(0)_bk(3)_occ:n=4177316::v=0.374051
+Memory(0)_avgMemLat:n=2027512::v=140.000000
+Memory(0):writeBack=0.000000
+Memory(0):writeExclusive=0.000000
+P(0)_nbranchMissHist:max=0
+P(0)_nbranchMissHist:v=-nan
+P(0)_nbranchMissHist:n=0.000000
+Memory(0):readHalfMiss=0.000000
+P(0)_CUNIT4_15_avgIssueTime:n=32692809::v=164.828429
+P(0)_robUsed:n=289782547::v=122.080796
+P(0)_AUNIT3_3_avgExecuteTime:n=7029328::v=1.003641
+Memory(0):pushDownHit=0.000000
+L3(0)_MSHR_avgSubUse:n=26284940::v=1.000000
+L3(0)_trackerDown4n=0.000000
+L3(0)_trackerDown3n=0.000000
+P(0)_FetchEngine_avgFetched:n=31189510::v=6.412412
+L3(0)_trackerDown2n=0.000000
+P(0)_BPred2_BTB:_trackerDown3=0.000000
+P(0)_ExeEngine_iBALU_LCALL:n=41.000000
+L3(0)_trackerDown1n=0.000000
+Memory(0):readHit=4055024.000000
+L3(0)_trackerDown2=0.000000
+L3(0)_trackerDown1=0.000000
+P(0)_ExeEngine:nSmallWinStall=1478170368.000000
+L3(0)_trackerOne=0.000000
+L3(0)_trackerZero=0.000000
+P(0)_ExeEngine_iBALU_RBRANCH:n=0.000000
+L3(0)_tracker15=0.000000
+L3(0)_tracker14=0.000000
+L3(0)_tracker13=0.000000
+L3(0)_tracker11=0.000000
+P(0)_AUNIT0_3_avgRenameTime:n=7029332::v=93.027052
+L3(0)_tracker10=0.000000
+DL1(0)_tracker9=0.000000
+L3(0)_tracker9=0.000000
+L3(0)_tracker8=0.000000
+DL1(0):writeMissState=0.000000
+L3(0)_tracker7=0.000000
+L3(0)_MSHR_avgUse:n=26284940::v=1.273625
+L3(0)_tracker6=0.000000
+P(0)_ExeEngine_iBALU_RCALL:n=5.000000
+P(0)_BPred:nBranches=28117272.000000
+L3(0)_tracker3=0.000000
+L3(0)_tracker5=0.000000
+L3(0)_tracker2=0.000000
+L3(0)_bk(1)_occ:n=4326169::v=0.360457
+L3(0)_tracker1=0.000000
+L3(0)_tracker0=0.000000
+L3(0)_tracker12=0.000000
+P(0)_AUNIT3_1_avgRenameTime:n=20476689::v=100.743894
+P(0)_AUNIT3_AUNIT_AALU_occ:n=20476689::v=0.385279
+L3(0):setSharedSetState=0.000000
+L3(0):setDirtySetState=0.000000
+L3(0):VPCMUAck=0.000000
+L3(0):MMUAck=0.000000
+L3(0):setSharedAck=0.000000
+P(0)_AUNIT2_imemoryBarrier=0.000000
+L3(0)p_MSHR_avgUse:n=0::v=-nan
+L3(0):setDirtyAck=0.000000
+P(0)_dataSignHist:max=0
+P(0)_dataSignHist:v=-nan
+P(0)_dataSignHist:n=0.000000
+L3(0):setValidAck=0.000000
+L3(0):VPCMUHalfMiss=0.000000
+P(0)_ExeEngine:nReplaysStall=0.000000
+L3(0):MMUHalfMiss=0.000000
+L3(0):setExclusiveHalfMiss=0.000000
+DL1(0)_tracker1=0.000000
+L3(0):setSharedHalfMiss=0.000000
+DL1(0):nPrefetchHitPending=0.000000
+L3(0):writeHalfMiss=0.000000
+P(0)_ExeEngine_iCALU_MULT:n=32.000000
+P(0)_AUNIT0_wrRegPool=20476701.000000
+DL1(0)_trackerUp1=0.000000
+L3(0):readHalfMiss=0.000000
+P(0)_LSUNIT5_iSALU_ADDR:stldViolations=0.000000
+L3(0):setInvalidHalfMiss=0.000000
+DL1(0):VPCMUMiss=0.000000
+L3(0):setExclusiveMissState=0.000000
+L3(0):setSharedMissState=0.000000
+L3(0):writeMissState=0.000000
+DL1(0):writeExclusive=0.000000
+L3(0):readMissState=0.000000
+DL1(0):VPCMUSetState=0.000000
+L3(0):setInvalidMissState=0.000000
+L3(0):setExclusiveMiss=20869.000000
+L3(0):readMiss=2006643.000000
+L3(0):VPCMUHit=0.000000
+DL1(0)_invalidateHit=0.000000
+L3(0):MMUHit=0.000000
+P(0)_AUNIT1_AUNIT_AALU_occ:n=20476690::v=0.389789
+L3(0):setSharedHit=0.000000
+L3(0):readHit=24245508.000000
+Memory(0):writeHalfMiss=0.000000
+L3(0):writeExclusive=0.000000
+L3(0):nPrefetchHitBusy=0.000000
+L3(0):nPrefetchHitPending=0.000000
+L3(0):nPrefetchHitLine=0.000000
+P(0)_BPred3_ldbp:nHit=873360.000000
+P(0)_BPred_BTB:nHitLabel=0.000000
+L3(0):nPrefetchLineFill=0.000000
+P(0)_BPred3_BTB:_tracker0=0.000000
+L3(0)_capInvalidateMiss=0.000000
+DL1(0)_trackerDown1=0.000000
+L3(0)_capInvalidateHit=0.000000
+P(0)_LSUNIT5_SUNIT_SALU_occ:n=1398008::v=0.000367
+L3(0)_avgMemLat:n=26284940::v=45.668567
+L3(0)_avgMissLat:n=2027512::v=160.584498
+L3(0):invNone=75450.000000
+P(0)_BPred:nMiss=1286977.000000
+L3(0):invOne=1940693.000000
+DL1(0):setSharedAck=0.000000
+L3(0):nTryPrefetch=0.000000
+P(0)_CUNIT4_winNotUsed:n=32692809::v=15.843467
+L2(0)p_MSHR:nStallConflict=0.000000
+L2(0)p_MSHR_avgUse:n=0::v=-nan
+L3(0):VPCMUSetState=0.000000
+P(0)_AUNIT1_3_avgRetireTime:n=7029330::v=184.454679
+P(0)_BPred3_BTB:_tracker13=0.000000
+L2(0)_MSHR:nStallConflict=0.000000
+L3(0):nSendPrefetch=0.000000
+L2(0)_MSHR_avgSubUse:n=26293996::v=1.000000
+L3(0)_bk(7)_occ:n=4570002::v=0.353240
+L2(0)_trackerDown4n=0.000000
+L2(0)_trackerDown3n=0.000000
+DL1(0):readMiss=26250133.000000
+L3(0):nPrefetchRedundant=0.000000
+L2(0)_trackerDown1n=0.000000
+DL1(0):writeBack=96362.000000
+L2(0)_trackerDown4=0.000000
+L3(0):setInvalidAck=0.000000
+L2(0)_trackerDown1=0.000000
+P(0)_ExeEngine_iRALU:n=192.000000
+L3(0)_trackerDown4=0.000000
+L2(0)_trackerMore=0.000000
+P(0)_BPred3_BTB:_tracker10=0.000000
+L3(0)_invalidateHit=0.000000
+DL1(0)_tracker7=0.000000
+L2(0)_trackerOne=0.000000
+L3(0)_invalidateMiss=0.000000
+L2(0)_tracker13=0.000000
+L3(0):setValidSetState=0.000000
+L2(0)_tracker12=0.000000
+L2(0)_tracker10=0.000000
+P(0)_ExeEngine_iLALU_LD:n=55885105.000000
+L2(0)_tracker6=0.000000
+L2(0)_tracker4=0.000000
+L3(0):writeBack=89662.000000
+L2(0)_tracker3=0.000000
+L2(0)_tracker2=0.000000
+P(0):nCommitted=199999999.000000
+L2(0)_tracker15=0.000000
+L2(0)_bk(0)_occ:n=52532828::v=7.059941
+L2(0)_tracker1=0.000000
+L3(0):MMUSetState=0.000000
+L2(0):setInvalidSetState=0.000000
+DL1(0)_trackerDown2=0.000000
+L2(0):MMUAck=0.000000
+P(0)_AUNIT1_BUNIT_BALU_occ:n=7029330::v=0.002579
+L2(0):setExclusiveAck=26284940.000000
+DL1(0)_trackerDown2n=0.000000
+P(0)_BPred2_BTB:nHitLabel=0.000000
+L2(0):setSharedAck=0.000000
+P(0)_BPred3_BTB:_trackerUp1=0.000000
+L2(0)_trackerUp1=0.000000
+P(0)_AUNIT0_3_avgIssueTime:n=7029332::v=1.630301
+DL1(0)_bk(0)_occ:n=145265529::v=0.000000
+P(0)_BPred_BTB:nMiss=100.000000
+L2(0):setValidAck=0.000000
+L2(0):MMUHalfMiss=0.000000
+DL1(0)_avgMissLat:n=26282922::v=53.965833
+P(0)_BPred2_BTB:_tracker13=0.000000
+DL1(0):readMissState=0.000000
+P(0)_avgPNRMissLoadSpec(7)=18.000000
+P(0)_avgPNRMissLoadSpec(6)=60.000000
+P(0)_avgPNRMissLoadSpec(5)=241.000000
+P(0)_avgPNRMissLoadSpec(3)=2231.000000
+P(0)_avgPNRMissLoadSpec(4)=885.000000
+P(0)_avgPNRMissLoadSpec(2)=1447366.000000
+P(0)_avgPNRMissLoadSpec(1)=22389842.000000
+P(0)_avgPNRMissLoadSpec(0)=265941904.000000
+P(0)_avgPNRMissLoadSpec:max=7
+P(0)_avgPNRMissLoadSpec:v=0.087295
+P(0)_avgPNRMissLoadSpec:n=289782547.000000
+L2(0):VPCMUSetState=0.000000
+L2(0):writeHalfMiss=0.000000
+L2(0)_tracker5=0.000000
+DL1(0):VPCMUHit=0.000000
+P(0)_AUNIT0_sched_occ:n=27506022::v=0.002067
+L2(0):VPCMUMissState=0.000000
+P(0)_ExeEngine_iBALU_RJUMP:n=4.000000
+L2(0):setExclusiveMissState=0.000000
+L3(0)_sendFill_occ:n=26284940::v=0.000000
+L2(0)_trackerDown3=0.000000
+L2(0):setExclusiveHalfMiss=0.000000
+P(0)_BPred2_BTB:_tracker15=0.000000
+L2(0):setSharedMissState=0.000000
+L2(0):writeMissState=0.000000
+P(0):nFreeze=0.000000
+L2(0):VPCMUMiss=0.000000
+Memory(0):readMiss=0.000000
+P(0)_ExeEngine_iCALU_FPALU:n=31610466.000000
+L2(0):MMUMiss=0.000000
+DL1(0):MMUHit=0.000000
+DL1(0):readHalfMiss=23196082.000000
+L3(0)_trackerDown3=0.000000
+L3(0):setSharedMiss=0.000000
+L2(0):writeMiss=0.000000
+DL1(0)_MSHR_avgSubUse:n=92699685::v=2.693654
+P(0)_BPred2_BTB:_trackerDown1n=0.000000
+L2(0):MMUHit=0.000000
+P(0)_BPred3_BTB:_trackerZero=0.000000
+L2(0):setExclusiveSetState=0.000000
+L2(0):setExclusiveHit=0.000000
+DL1(0)_sendFill_occ:n=92699685::v=0.000000
+L2(0):writeHit=0.000000
+L2(0):writeExclusive=0.000000
+L2(0):readHalfMiss=0.000000
+L2(0):nPrefetchDropped=0.000000
+L2(0):nPrefetchHitBusy=0.000000
+L3(0)_avgSnoopLat:n=0::v=-nan
+L2(0):nPrefetchRedundant=0.000000
+L2(0):nPrefetchWasteful=0.000000
+L2(0):nPrefetchUseful=0.000000
+Memory(0):writeHit=2016143.000000
+L2(0)_invalidateHit=0.000000
+L3(0):setExclusiveAck=2027512.000000
+L3(0)_avgHalfMemLat:n=0::v=-nan
+DL1(0):setSharedHalfMiss=0.000000
+L3(0):displacedSend=2016143.000000
+L2(0)_avgMemLat:n=26293996::v=52.852050
+L2(0)_avgMissLat:n=26284940::v=52.863980
+L2(0):lineFill=26284940.000000
+L3(0):lineFill=2027512.000000
+L2(0):writeBack=87302.000000
+L3(0):setInvalidSetState=0.000000
+L2(0):invAll=0.000000
+P(0)_BPred3_BTB:nHitLabel=0.000000
+L2(0):displacedSend=98721.000000
+DL1(0)_trackerZero=0.000000
+L3(0):setExclusiveHit=11920.000000
+L2(0):VPCMUHalfMiss=0.000000
+IL1(0)p_MSHR:nStallConflict=0.000000
+L2(0):setSharedHalfMiss=0.000000
+L3(0):MMUMiss=0.000000
+IL1(0)p_MSHR_avgUse:n=0::v=-nan
+IL1(0)_MSHR_avgUse:n=31189510::v=1.003405
+IL1(0)_trackerDown4n=0.000000
+L2(0)_trackerDown2n=0.000000
+P(0)_BPred_BTB:_tracker5=0.000000
+DL1(0):VPCMUAck=0.000000
+L3(0):nPrefetchDropped=0.000000
+IL1(0)_trackerDown3n=0.000000
+L3(0)_bk(5)_occ:n=4329182::v=0.360877
+P(0)_pref__histPrefetchDelta:max=0
+P(0)_pref__histPrefetchDelta:v=-nan
+P(0)_pref__histPrefetchDelta:n=0.000000
+IL1(0)_trackerDown1n=0.000000
+L3(0)p_MSHR_avgSubUse:n=0::v=-nan
+L2(0)_avgSnoopLat:n=22838::v=2.100972
+IL1(0)_trackerDown1=0.000000
+L2(0)_tracker14=0.000000
+DL1(0):setSharedMissState=0.000000
+IL1(0)_trackerTwo=0.000000
+L3(0):MMUMissState=0.000000
+P(0)_BPred_BTB:_tracker4=0.000000
+IL1(0)_sendFill_occ:n=31189510::v=0.005454
+IL1(0)_tracker15=0.000000
+L2(0):setSharedSetState=0.000000
+IL1(0)_tracker13=0.000000
+IL1(0)_tracker12=0.000000
+P(0)_BPred_BTB:_trackerZero=0.000000
+IL1(0)_tracker11=0.000000
+P(0)_AUNIT2_winNotUsed:n=27506018::v=9.974657
+L2(0)_tracker7=0.000000
+P(0)_BPred2_BTB:_tracker11=0.000000
+IL1(0)_tracker9=0.000000
+P(0)_ExeEngine:nSmallREGStall=0.000000
+L2(0)_avgPrefetchLat:n=0::v=-nan
+P(0)_FetchEngine_avgBranchTime2:n=442106::v=2.000000
+IL1(0)_tracker8=0.000000
+L3(0)_trackerMore=0.000000
+P(0)_AUNIT2_1_avgIssueTime:n=20476690::v=79.797414
+IL1(0)_tracker7=0.000000
+IL1(0)_tracker10=0.000000
+P(0)_AUNIT1_3_avgRenameTime:n=7029330::v=93.427034
+P(0)_BPred2_BTB:_tracker14=0.000000
+DL1(0)_tracker4=0.000000
+P(0)_BPred:nBranches3=28117272.000000
+L3(0):nPrefetchUseful=0.000000
+IL1(0)_tracker6=0.000000
+P(0)_LSUNIT5_wrRegPool=55885108.000000
+IL1(0)_tracker4=0.000000
+IL1(0)_tracker2=0.000000
+L2(0):nPrefetchLineFill=0.000000
+P(0)_ExeEngine:nOutsStoresStall=0.000000
+L3(0):setInvalidMiss=0.000000
+L2(0):setInvalidHit=0.000000
+IL1(0)_tracker1=0.000000
+L2(0):invOne=11419.000000
+IL1(0)_tracker0=0.000000
+DL1(0):invNone=346.000000
+L3(0)_avgPrefetchLat:n=0::v=-nan
+L2(0):nPrefetchHitLine=0.000000
+IL1(0):MMUSetState=0.000000
+L3(0)_bk(0)_occ:n=4217116::v=0.377410
+P(0)_FetchEngine:nBTAC=0.000000
+L2(0):nTryPrefetch=0.000000
+P(0)_rrobUsed:n=289617062::v=4.999887
+L2(0)_tracker0=0.000000
+P(0)_AUNIT3_wrRegPool=20476699.000000
+IL1(0):setExclusiveSetState=0.000000
+Memory(0):writeMiss=0.000000
+P(0)_ExeEngine_iCALU_FPMULT:n=558021.000000
+IL1(0):setSharedSetState=0.000000
+IL1(0):setDirtySetState=0.000000
+IL1(0):setSharedAck=0.000000
+L2(0):invNone=87302.000000
+IL1(0):setValidAck=0.000000
+P(0)_AUNIT2_1_avgRenameTime:n=20476690::v=104.090807
+L3(0):displacedRecv=98721.000000
+IL1(0):VPCMUSetState=0.000000
+IL1(0)p_MSHR_avgSubUse:n=0::v=-nan
+L2(0):setSharedMiss=0.000000
+IL1(0):setInvalidAck=0.000000
+P(0)_BPred:nFixes1=26243528.000000
+L2(0):readMissState=0.000000
+L2(0)_avgHalfMemLat:n=0::v=-nan
+L3(0):setExclusiveSetState=0.000000
+IL1(0):setInvalidHalfMiss=0.000000
+L2(0):setInvalidHalfMiss=0.000000
+IL1(0)_trackerMore=0.000000
+L3(0):nPrefetchWasteful=0.000000
+IL1(0):VPCMUMissState=0.000000
+L2(0):setSharedHit=0.000000
+IL1(0):MMUAck=0.000000
+DL1(0):invAll=0.000000
+L2(0)_MSHR_avgUse:n=26293996::v=8.466881
+IL1(0):setExclusiveMissState=0.000000
+IL1(0):setSharedMissState=0.000000
+IL1(0)_trackerDown2=0.000000
+L3(0)_tracker4=0.000000
+IL1(0):writeMissState=0.000000
+IL1(0):setInvalidMissState=0.000000
+DL1(0):displacedSend=26282576.000000
+IL1(0):setDirtyAck=0.000000
+L2(0):setDirtyAck=0.000000
+IL1(0)_tracker14=0.000000
+IL1(0):VPCMUAck=0.000000
+L2(0):setInvalidMiss=0.000000
+L2(0)p_MSHR_avgSubUse:n=0::v=-nan
+IL1(0)_MSHR_avgSubUse:n=31189510::v=1.001499
+IL1(0):MMUMiss=0.000000
+L2(0)_tracker9=0.000000
+DL1(0):setExclusiveHit=0.000000
+L2(0)_capInvalidateHit=0.000000
+P(0)_AUNIT1_wrForwardBus=22127313.000000
+L2(0):VPCMUAck=0.000000
+IL1(0):setSharedMiss=0.000000
+DL1(0)_trackerDown3=0.000000
+DL1(0)_trackerDown4=0.000000
+L2(0):setInvalidMissState=0.000000
+IL1(0):writeMiss=0.000000
+DL1(0):nPrefetchWasteful=0.000000
+L2(0):readMiss=26252151.000000
+IL1(0):readMiss=11074.000000
+P(0)_BPred2_BTB:_trackerOne=0.000000
+IL1(0):MMUHit=0.000000
+IL1(0):setExclusiveMiss=0.000000
+DL1(0)_trackerDown3n=0.000000
+IL1(0)_trackerDown2n=0.000000
+P(0)_nLoadAddr_per_branch:max=0
+P(0)_nLoadAddr_per_branch:v=-nan
+P(0)_nLoadAddr_per_branch:n=0.000000
+IL1(0)_trackerUp1n=0.000000
+DL1(0):nPrefetchHitLine=0.000000
+IL1(0):setSharedHit=0.000000
+L2(0)_tracker8=0.000000
+DL1(0):setExclusiveAck=26282922.000000
+IL1(0):setExclusiveHit=0.000000
+L3(0)p_MSHR:nStallConflict=0.000000
+IL1(0):writeHalfMiss=0.000000
+IL1(0)_trackerZero=0.000000
+IL1(0):readHalfMiss=20348.000000
+IL1(0):readHit=31158088.000000
+IL1(0):setValidSetState=0.000000
+P(0):clockTicks=289885799.000000
+P(0)_LSUNIT5_iSALU_ST:stldViolations=207237.000000
+L2(0)_trackerZero=0.000000
+IL1(0):setInvalidHit=0.000000
+IL1(0):nPrefetchDropped=0.000000
+IL1(0)_trackerDown4=0.000000
+L3(0):VPCMUMissState=0.000000
+L2(0):nPrefetchHitPending=0.000000
+P(0)_ExeEngine_iSALU_ST:n=1398005.000000
+IL1(0):nPrefetchLineFill=0.000000
+IL1(0):nPrefetchHitPending=0.000000
+P(0)_nReplayInst:n=0::v=-nan
+P(0)_BPred_BTB:nHit=26357473.000000
+IL1(0):MMUMissState=0.000000
+IL1(0):nPrefetchRedundant=0.000000
+IL1(0):nPrefetchWasteful=0.000000
+DL1(0)_tracker15=0.000000
+P(0)_pref__avgPrefetchConf:n=0::v=-nan
+IL1(0)_invalidateHit=0.000000
+IL1(0):MMUHalfMiss=0.000000
+L3(0):VPCMUMiss=0.000000
+IL1(0)_avgMemLat:n=31189510::v=2.165260
+IL1(0):lineFill=11074.000000
+L2(0):setValidSetState=0.000000
+L3(0)_trackerTwo=0.000000
+IL1(0):readMissState=0.000000
+L3(0):setInvalidHit=0.000000
+IL1(0):writeBack=0.000000
+DL1(0):readHit=41855462.000000
+L3(0):writeMiss=0.000000
+L2(0):nSendPrefetch=0.000000
+P(0)_BPred_BTB:_tracker9=0.000000
+IL1(0)_capInvalidateHit=0.000000
+P(0)_ExeEngine_iSALU_ADDR:n=0.000000
+P(0)_BPred3_BTB:_trackerDown2=0.000000
+IL1(0):invNone=11069.000000
+P(0)_BPred_BTB:_tracker7=0.000000
+IL1(0):setExclusiveHalfMiss=0.000000
+P(0)_BPred3_BTB:_tracker15=0.000000
+DL1(0):nPrefetchRedundant=0.000000
+IL1(0):nPrefetchHitBusy=0.000000
+L2(0)_invalidateMiss=0.000000
+P(0)_BPred_BTB:_trackerTwo=0.000000
+IL1(0)_trackerUp1=0.000000
+IL1(0):VPCMUMiss=0.000000
+IL1(0)_avgMissLat:n=11074::v=173.520228
+P(0)_AUNIT2_3_avgRetireTime:n=7029328::v=181.246577
+P(0)_BPred2_BTB:_trackerTwo=0.000000
+L2(0):setDirtySetState=0.000000
+IL1(0):invOne=0.000000
+IL1(0):nPrefetchUseful=0.000000
+L2(0):displacedRecv=26282578.000000
+IL1(0)_avgHalfMemLat:n=20348::v=155.888048
+L3(0)_MSHR:nStallConflict=0.000000
+L2(0)_trackerDown2=0.000000
+IL1(0):setInvalidMiss=0.000000
+P(0)_BPred_BTB:_tracker11=0.000000
+IL1(0):setSharedHalfMiss=0.000000
+IL1(0):VPCMUHit=0.000000
+IL1(0):writeExclusive=0.000000
+IL1(0)_MSHR:nStallConflict=20348.000000
+P(0)_AUNIT0_1_avgIssueTime:n=20476690::v=80.046836
+L2(0)_trackerUp1n=0.000000
+P(0)_LSUNIT5_14_avgRenameTime:n=0::v=-nan
+IL1(0):invAll=0.000000
+P(0)_AUNIT2_rdRegPool=55012036.000000
+P(0)_BPred2_BTB:nMiss=134.000000
+IL1(0)_avgPrefetchLat:n=0::v=-nan
+P(0)_BPred3_BTB:_tracker4=0.000000
+L3(0):writeHit=0.000000
+IL1(0):displacedRecv=0.000000
+L2(0)_trackerTwo=0.000000
+IL1(0)_capInvalidateMiss=0.000000
+L2(0):MMUSetState=0.000000
+L2(0)_tracker11=0.000000
+IL1(0):writeHit=0.000000
+P(0)_BPred:nNoPredict2=0.000000
+P(0)_LSUNIT5_LUNIT_LALU_occ:n=55885105::v=1.001954
+IL1(0)_avgSnoopLat:n=0::v=-nan
+L2(0):MMUMissState=0.000000
+DL1(0)p_MSHR:nStallConflict=0.000000
+IL1(0)_invalidateMiss=0.000000
+DL1(0):setDirtyAck=0.000000
+P(0)_BPred:nMiss2=873724.000000
+L3(0)_bk(2)_occ:n=4329752::v=0.360703
+P(0)_ExeEngine:nOutsLoadsStall=0.000000
+IL1(0)_tracker5=0.000000
+S(0):DetailTime=0.000000
+IL1(0)_trackerDown3=0.000000
+P(0)_BPred2_BTB:_trackerDown3n=0.000000
+P(0)_BPred2_BTB:_tracker6=0.000000
+L2(0):setInvalidAck=0.000000
+S(0):InitInst=0.000000
+IL1(0):setExclusiveAck=11074.000000
+L3(0)_trackerUp1n=0.000000
+P(0)_AUNIT2_3_avgExecuteTime:n=7029328::v=1.008666
+IL1(0):displacedSend=2.000000
+IL1(0):nSendPrefetch=0.000000
+DL1(0)_trackerDown1n=0.000000
+IL1(0):setInvalidSetState=11069.000000
+IL1(0)_tracker3=0.000000
+IL1(0):nTryPrefetch=0.000000
+P(0)_BPred2_BTB:_tracker5=0.000000
+L2(0):readHit=9056.000000
+L2(0):setExclusiveMiss=32789.000000
+IL1(0)_trackerOne=0.000000
+P(0)_BPred:nTaken=27001058.000000
+P(0)_BPred3_BTB:_trackerDown4n=0.000000
+L3(0)_trackerUp1=0.000000
+IL1(0):VPCMUHalfMiss=0.000000
+L2(0):VPCMUHit=0.000000
+L2(0)_capInvalidateMiss=0.000000
+L3(0):invAll=0.000000
+IL1(0):nPrefetchHitLine=0.000000
+P(0)_LSUNIT5_sched_occ:n=57283113::v=0.644782
+powerTime=0.000000
+#END GStats::report done
