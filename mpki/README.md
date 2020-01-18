@@ -11,12 +11,12 @@ Make sure you have `pandas` package
 * `export ESESC_REPORT_PL=/soe/nkabylka/projs/esesc-masc/conf/scripts/report.pl`
 * `python plot.py report.list`
 
-## `report.list` file
+## report.list file
 Each line of this file contains two pieces of information:
 1. path to the report file that was generated at the end of ESESC 
 2. the name of the benchmark, this will be used in x-axis
 
-Example:
+Example contents:
 ```
 ./reports/esesc_noname.zWIHlM gzip
 ./reports/esesc_noname.zYfxEw bfs
