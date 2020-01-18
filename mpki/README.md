@@ -1,6 +1,6 @@
 ## Overview
 The `plot.py` will allow to generate a plot that is shown below:
-![]()
+![](https://github.com/kabylkas/esesc-plot-scripts/blob/master/mpki/plot.png?raw=true)
 
 ## Requirements
 Make sure you have `pandas` package
