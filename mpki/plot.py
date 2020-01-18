@@ -29,7 +29,7 @@ with open(report_list_file, "r") as report_list:
           count += 1
           if count > 3:
             break
-          else:
+          elif count != 1:
             info = line.split()
             mpkis.append(float(info[len(info) - 1]))
 
@@ -41,8 +41,12 @@ print("Parsed reports... Plotting...")
 print(data)
 print(data_labels)
 # Convert data to pandas DataFrame.
-df = pd.DataFrame(data, index=data_labels).T
+df = pd.DataFrame(data, index=data_labels)
 
-# Plot.
-pd.concat([df.mean().rename('average'), df.min().rename('min'), df.max().rename('max')], axis=1).plot(kind='bar', rot=30)
-plt.savefig('output.png')
+# Plot
+df = df.rename(columns={0: "TAGE", 1: "LDBP"})
+print(df)
+ax = df.plot(kind='bar', rot=30)
+
+ax.set_ylabel("MPKI")
+plt.savefig('plot.png')
