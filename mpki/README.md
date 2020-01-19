@@ -9,7 +9,12 @@ Make sure you have `pandas` package
 
 ## Example usage:
 * `export ESESC_REPORT_PL=/soe/nkabylka/projs/esesc-masc/conf/scripts/report.pl`
-* `python plot.py report.list`
+* `python plot.py report.list "Nice Title" plot.png`
+
+There are 3 arguments that you need to provide:
+* report.list - list of ESESC report files
+* Title of the plot in quotes
+* Output file name
 
 ## report.list file
 Each line of this file contains two pieces of information:
