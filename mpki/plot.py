@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 report_list_file = sys.argv[1]
+plot_title = sys.argv[2]
+plot_output = sys.argv[3]
 
 # get data
 data = []
@@ -49,4 +51,5 @@ print(df)
 ax = df.plot(kind='bar', rot=30)
 
 ax.set_ylabel("MPKI")
-plt.savefig('plot.png')
+ax.set_title(plot_title)
+plt.savefig(plot_output)
