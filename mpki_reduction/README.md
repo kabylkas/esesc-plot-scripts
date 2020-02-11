@@ -7,7 +7,7 @@ Make sure you have `pandas` package
 * `export ESESC_REPORT_PL=/soe/nkabylka/projs/esesc-masc/conf/scripts/report.pl`
 * `python3 plot.py --path /soe/akashsridhar/build_esesc_riscv/trace_data/run --date feb8_2020 --label "Nice title" --output plot`
 
-There are 3 arguments that you need to provide:
+There are 4 arguments that you need to provide:
 * --path expects path to the directory with bunch of report files
 * --date expects the date in the file name. The scripts essentially greps for this date
 * --label expects title of the plot
