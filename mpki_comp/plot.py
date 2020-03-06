@@ -83,7 +83,11 @@ df = df.rename(columns={0: "Not predictable", 1: "Predictable but late", 2: "LDB
 print(df)
 ax = df.plot(kind='bar', rot=30, stacked=True)
 
-ax.set_ylabel("MPKI")
+ylabel = "MPKI"
+if normalize == 1:
+  ylabel += " (in %)"
+
+ax.set_ylabel(ylabel)
 ax.set_title(plot_title)
 plt.tight_layout()
 plt.savefig(plot_output)

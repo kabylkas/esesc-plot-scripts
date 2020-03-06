@@ -1,6 +1,6 @@
 ## Overview
 The `plot.py` will allow to generate a plot that is shown below:
-![](https://github.com/kabylkas/esesc-plot-scripts/blob/master/mpki/plot.png?raw=true)
+![](https://github.com/kabylkas/esesc-plot-scripts/blob/master/mpki_comp/pl_st.png?raw=true)
 
 ## Requirements
 Make sure you have `pandas` package
@@ -11,10 +11,11 @@ Make sure you have `pandas` package
 * `export ESESC_REPORT_PL=/soe/nkabylka/projs/esesc-masc/conf/scripts/report.pl`
 * `python plot.py report.list "Nice Title" plot.png`
 
-There are 3 arguments that you need to provide:
+There are 4 arguments that you need to provide:
 * report.list - list of ESESC report files
 * Title of the plot in quotes
 * Output file name
+* `0` if you want absolute MPKI values, `1` if normalized to 100%
 
 ## report.list file
 Each line of this file contains two pieces of information:
