@@ -15,4 +15,6 @@ There are 4 arguments that you need to provide:
 
 
 ## Format of report list file:
+I suggest to create a serarate list for each table type. This directory contains example list for prefetcher table. For the script to work properly, the list should be complete. This means that for each benchmark, the reports for all 6 runs should be present in the list. The name of the reports should also comply with naming convension that we agreed upon (sorry, this script is very fragile).
 
+![format](https://github.com/kabylkas/esesc-plot-scripts/blob/master/table_sizes/docs/report_list.png?raw=true)
