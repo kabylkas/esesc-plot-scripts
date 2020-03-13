@@ -12,35 +12,28 @@ def percent(base, offset, rev = 0):
     
 
 def parse_args():
-  usage = "usage: %prog --path [path to the directory with reports] --table [table name to filter] --label [plot label] --output [output plot name]"
+  usage = "usage: %prog --path [path to the directory with reports] --list [list of reports to process] --label [plot label] --output [output plot name]"
   parser = optparse.OptionParser(usage=usage)
   parser.add_option('--path', action="store", dest="path")
-  parser.add_option('--table', action="store", dest="table")
+  parser.add_option('--list', action="store", dest="list")
   parser.add_option('--output', action="store", dest="output")
   parser.add_option('--label', action="store", dest="label")
 
   options, remainder = parser.parse_args()
 
-  if options.path == None or options.table == None or options.output == None or options.label == None:
+  if options.path == None or options.list == None or options.output == None or options.label == None:
     print(usage)
     return None
   
   return options
 
-def gen_plot_mpki(path, table, plot_title, plot_output):
-  # get list of file to parse
-  os.system("ls {} | grep {} | grep esesc_ | grep feb22 | grep -v _ldbp_1M_ > report_list.txt".format(path, table))
-  os.system("ls {} | grep esesc_ | grep 256K | grep feb22 >> report_list.txt".format(path))
-
+def gen_plot_mpki(path, r_list, plot_title, plot_output):
   # get data
   data = []
   data_labels = []
   mpkis = {}
-  benchmarks = ["gap_tc", "gap_cc", "gap_pr", "gap_bfs", "spec06_astar", "spec06_hmmer"]
-  #benchmarks = ["gap_tc", "gap_pr", "gap_bfs", "spec06_astar", "spec06_hmmer"]
-  #benchmarks = ["gap_tc", "gap_cc", "gap_pr", "spec06_astar", "spec06_hmmer"]
   sizes = []
-  with open("report_list.txt", "r") as report_list:
+  with open(r_list, "r") as report_list:
     for rl in report_list:
       rl = rl.strip().split()
 
@@ -55,9 +48,6 @@ def gen_plot_mpki(path, table, plot_title, plot_output):
         size = 512
       else:
         size = int(file_name_bd[4])
-
-      if label not in benchmarks:
-        continue
 
       if size not in sizes:
         sizes.append(size)
@@ -136,6 +126,6 @@ def gen_plot_mpki(path, table, plot_title, plot_output):
 def main():
   args = parse_args()
   if args != None:
-    gen_plot_mpki(args.path, args.table, args.label, args.output)
+    gen_plot_mpki(args.path, args.list, args.label, args.output)
 
 main()
