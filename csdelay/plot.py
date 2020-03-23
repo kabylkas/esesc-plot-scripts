@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 plot_title = sys.argv[1]
 plot_output = sys.argv[2]
 normalize = int(sys.argv[3])
+y_min = float(sys.argv[4])
+y_max = float(sys.argv[5])
 
 # get data
 data = {}
@@ -67,7 +69,7 @@ print(avg)
 print(data_labels)
 # Convert data to pandas DataFrame.
 
-ax = df.plot(kind='line', lw=1, style=["bx-"], ylim=(0,1.5))
+ax = df.plot(kind='line', lw=1, style=["bx-"], ylim=(y_min, y_max))
 ax.set_ylabel(l)
 ax.set_xlabel("Code Slice Delay")
 ax.set_title(plot_title)
