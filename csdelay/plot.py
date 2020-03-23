@@ -53,20 +53,22 @@ for data_label in data_labels:
   l = data[str(data_label)]
   avg.append(float(sum(l)/len(l)/1.0))
 
+l = "Average MPKI"
 if normalize>0:
   n = avg[0]
+  l = "Normalized average MPKI"
   for i in range(len(avg)):
     avg[i] = avg[i]/n
 
-df = pd.DataFrame({'Average MPKI': avg}, index=data_labels)
+df = pd.DataFrame({l: avg}, index=data_labels)
 # plot data
 print("Parsed reports... Plotting...")
 print(avg)
 print(data_labels)
 # Convert data to pandas DataFrame.
 
-ax = df.plot(kind='line', lw=1)
-ax.set_ylabel("Average MPKI")
+ax = df.plot(kind='line', lw=1, style=["bx-"], ylim=(0,1.5))
+ax.set_ylabel(l)
 ax.set_xlabel("Code Slice Delay")
 ax.set_title(plot_title)
 plt.tight_layout()
