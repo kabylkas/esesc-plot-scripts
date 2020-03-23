@@ -11,28 +11,24 @@ def percent(base, offset, rev = 0):
     return float((offset-base)/base/1.0*100)
     
 
-def parse_args():
-  usage = "usage: %prog --path [path to the directory with reports] --list [list of reports to process] --label [plot label] --output [output plot name]"
-  parser = optparse.OptionParser(usage=usage)
-  parser.add_option('--path', action="store", dest="path")
-  parser.add_option('--list', action="store", dest="list")
-  parser.add_option('--output', action="store", dest="output")
-  parser.add_option('--label', action="store", dest="label")
-
-  options, remainder = parser.parse_args()
-
-  if options.path == None or options.list == None or options.output == None or options.label == None:
-    print(usage)
-    return None
+def parse_args(cfg_file):
+  options = {}
+  with open(cfg_file, "r") as infile:
+    for line in infile:
+       kv = line.strip().split(":")
+       k = kv[0]
+       v = kv[1]
+       options[k] = v
   
   return options
 
-def gen_plot_mpki(path, r_list, plot_title, plot_output):
+def gen_plot_mpki(path, r_list, plot_output, target, mll, tll, pl, xl, yl):
   # get data
   data = []
   data_labels = []
   mpkis = {}
   sizes = []
+  target = float(target)
   with open(r_list, "r") as report_list:
     for rl in report_list:
       rl = rl.strip().split()
@@ -97,35 +93,44 @@ def gen_plot_mpki(path, r_list, plot_title, plot_output):
 
     avg.append(float(s/d/1.0))
 
-  perc = []
+  data = []
   base = avg[len(indices)-1]
   print(base)
   for i in range(len(indices)-1):
     comp = avg[i]
-    perc_diff = (comp-base)/base/1.0*100
-    perc.append([100 - perc_diff, 95])
+    data.append([float(comp/base/1.0), target])
 
-  perc.append([100, 95])
+  data.append([1, target])
 
 
   print("Data ready: ")
-  print(perc)
+  print(data)
   print(avg)
   print("Plotting average MPKI vs size into file: {}.png".format(plot_output))
 
   # Convert data to pandas DataFrame.
-  df = pd.DataFrame(perc, index=indices_s, columns=['Percentage reduction', 'Target size'])
+  s = ["bx-", "r--"]
+  df = pd.DataFrame(data, index=indices_s, columns=[mll, tll])
 
-  ax = df.plot(kind='line', rot=64, lw=1)
-  ax.set_ylabel("Average MPKI")
-  ax.set_xlabel("Table size")
-  ax.set_title(plot_title)
+  ax = df.plot(kind='line', rot=64, lw=1, style=s)
+  ax.set_ylabel(yl)
+  ax.set_xlabel(xl)
+  ax.set_title(pl)
   plt.tight_layout()
   plt.savefig("{}.png".format(plot_output))
 
 def main():
-  args = parse_args()
+  cfg_file = sys.argv[1]
+  args = parse_args(cfg_file)
   if args != None:
-    gen_plot_mpki(args.path, args.list, args.label, args.output)
+    gen_plot_mpki(args["path"], \
+                  args["list"], \
+                  args["output"], \
+                  args["target"], \
+                  args["main_line_label"], \
+                  args["target_line_label"], \
+                  args["plot_label"], \
+                  args["xlabel"], \
+                  args["ylabel"])
 
 main()
