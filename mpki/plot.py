@@ -42,14 +42,17 @@ with open(report_list_file, "r") as report_list:
 print("Parsed reports... Plotting...")
 print(data)
 print(data_labels)
-# Convert data to pandas DataFrame.
-df = pd.DataFrame(data, index=data_labels)
 
-# Plot
-df = df.rename(columns={0: "TAGE", 1: "LDBP"})
+data_to_plot = []
+for d in data:
+  data_to_plot.append(d[1]/d[0])
+
+# Convert data to pandas DataFrame.
+df = pd.DataFrame({'Normalized MPKI (baseline IMLI)': data_to_plot}, index=data_labels)
+
 print(df)
 ax = df.plot(kind='bar', rot=30)
 
-ax.set_ylabel("MPKI")
+ax.set_ylabel("Normalized MPKI")
 ax.set_title(plot_title)
 plt.savefig(plot_output)
